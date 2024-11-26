@@ -43,5 +43,10 @@ class MainActivity : AppCompatActivity() {
       adapter = studentAdapter
       layoutManager = LinearLayoutManager(this@MainActivity)
     }
+
+    val addButton: Button = findViewById(R.id.btn_add_new)
+    addButton.setOnClickListener {
+      studentAdapter.showAddStudentDialog(this)
+    }
   }
 }
