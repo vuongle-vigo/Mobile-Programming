@@ -37,7 +37,7 @@ class MainActivity : AppCompatActivity() {
       StudentModel("Lê Văn Vũ", "SV020")
     )
 
-    val studentAdapter = StudentAdapter(students)
+    val studentAdapter = StudentAdapter(students, this)
 
     findViewById<RecyclerView>(R.id.recycler_view_students).run {
       adapter = studentAdapter

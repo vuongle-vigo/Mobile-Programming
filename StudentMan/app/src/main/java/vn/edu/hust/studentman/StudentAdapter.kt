@@ -1,5 +1,6 @@
 package vn.edu.hust.studentman
 
+import android.app.Activity
 import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
@@ -9,8 +10,12 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.snackbar.Snackbar
 
-class StudentAdapter(val students: MutableList<StudentModel>): RecyclerView.Adapter<StudentAdapter.StudentViewHolder>() {
+class StudentAdapter(val students: MutableList<StudentModel>, private val activity: Activity): RecyclerView.Adapter<StudentAdapter.StudentViewHolder>() {
+  private var removedStudent: StudentModel? = null
+  private var removedPosition: Int = -1
+
   class StudentViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
     val textStudentName: TextView = itemView.findViewById(R.id.text_student_name)
     val textStudentId: TextView = itemView.findViewById(R.id.text_student_id)
@@ -96,10 +101,31 @@ class StudentAdapter(val students: MutableList<StudentModel>): RecyclerView.Adap
     val dialog = dialogBuilder.create()
     dialog.show()
   }
+
   private fun removeStudent(position: Int) {
     if (position >= 0 && position < students.size) {
+      removedStudent = students[position]
+      removedPosition = position
+
       students.removeAt(position)
       notifyItemRemoved(position)
+
+      val snackbar = Snackbar.make(
+        activity.findViewById(android.R.id.content),
+        "Sinh viên đã bị xóa",
+        Snackbar.LENGTH_LONG
+      )
+      snackbar.setAction("UNDO") {
+        undoRemoveStudent()
+      }
+      snackbar.show()
+    }
+  }
+
+  private fun undoRemoveStudent() {
+    removedStudent?.let {
+      students.add(removedPosition, it)  // Thêm sinh viên trở lại danh sách
+      notifyItemInserted(removedPosition)  // Cập nhật lại RecyclerView
     }
   }
 }
